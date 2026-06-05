@@ -14,28 +14,30 @@
       overflow: hidden;
       height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       color: #ffffff;
     }
 
     .loader-container {
-      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
       gap: 24px;
       cursor: pointer;
       user-select: none;
       transition: transform 0.2s ease;
+      z-index: 9999;
     }
 
     .loader-container:active {
-      transform: scale(0.97);
+      transform: scale(0.99);
     }
 
-    /* Rotating Slider / Progress Ring */
     .slider-wrapper {
       position: relative;
       width: 100px;
@@ -51,6 +53,7 @@
       height: 100%;
       border: 4px solid rgba(255, 255, 255, 0.05);
       border-radius: 50%;
+      display: none; 
     }
 
     .static-ring {
@@ -61,6 +64,7 @@
       border-top: 4px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       transition: all 0.3s ease;
+      display: none; /* Hidden by default */
     }
 
     .rotator {
@@ -75,10 +79,10 @@
     }
 
     .status-text {
-      font-size: 16px;
+      font-size: 24px;
       font-weight: 500;
       letter-spacing: 0.5px;
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(255, 255, 255, 0.8);
       transition: color 0.3s ease;
     }
 
@@ -92,18 +96,20 @@
 
   <div class="loader-container" id="interactiveZone" onclick="startLoading()">
     <div class="slider-wrapper">
-      <div class="track"></div>
+      <div class="track" id="bgTrack"></div>
       <div class="static-ring" id="staticRing"></div>
       <div class="rotator" id="rotatorRing"></div>
     </div>
-    <div class="status-text" id="statusLabel">Click here to find a fuck mate 🤤🥵</div>
+    <div class="status-text" id="statusLabel">Click here to search for a fuck mate 🤤🥵</div>
   </div>
 
   <script>
+    window.alert("WARNING: ADULT CONTENT. IF YOU ARE UNDER 18, LEAVE THIS WEBSITE IMMEDIATELY.");
     const interactiveZone = document.getElementById('interactiveZone');
     const statusLabel = document.getElementById('statusLabel');
     const staticRing = document.getElementById('staticRing');
     const rotatorRing = document.getElementById('rotatorRing');
+    const bgTrack = document.getElementById('bgTrack');
     
     let textures = [];
     let gls = [];
@@ -168,8 +174,9 @@
     }
 
     function startLoading() {
-      staticRing.style.display = 'none';
+      bgTrack.style.display = 'block';
       rotatorRing.style.display = 'block';
+      
       statusLabel.textContent = "Finding a Match...";
       statusLabel.style.color = "#3b82f6";
       
